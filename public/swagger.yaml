@@ -1,0 +1,91 @@
+openapi: 3.0.1
+info:
+  title: Health Insurance API
+  description: An API for comparing health insurance premiums based on various input parameters.
+  version: 1.0.0
+
+servers:
+  - url: https://project-server-16485889154.europe-west1.run.app
+    description: The production server
+
+paths:
+  /insuranceapi/compare:
+    post:
+      summary: Compare health insurance premiums based on user input.
+      description: This endpoint allows users to compare health insurance premiums by providing various parameters.
+      operationId: compareHealthInsurance
+      requestBody:
+        description: Request body for comparing insurance premiums.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postalCode:
+                  type: integer
+                  example: 8001
+                  description: The postal code of the user.
+                birthYear:
+                  type: integer
+                  example: 1993
+                  description: The birth year of the user.
+                accidentCoverage:
+                  type: boolean
+                  example: false
+                  description: Indicates if accident coverage is included.
+                model:
+                  type: string
+                  enum:
+                    - FreieWahl
+                    - Hausarzt
+                    - Telmed
+                    - DIV
+                  example: DIV
+                  description: The model of insurance selected.
+                franchise:
+                  type: integer
+                  example: 2500
+                  description: The franchise amount for the health insurance.
+      responses:
+        '200':
+          description: A list of insurance premiums that match the given parameters.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    Versicherer:
+                      type: string
+                      example: '194'
+                      description: The insurance provider ID.
+                    Prämie:
+                      type: string
+                      example: '337.9'
+                      description: The monthly premium for the insurance.
+              examples:
+                example1:
+                  value:
+                    - Versicherer: '194'
+                      Prämie: '337.9'
+                    - Versicherer: '32'
+                      Prämie: '339.5'
+                    - Versicherer: '246'
+                      Prämie: '324.2'
+                    - Versicherer: '8'
+                      Prämie: '366.9'
+                example2:
+                  value:
+                    - Versicherer: '12'
+                      Prämie: '350.0'
+                    - Versicherer: '55'
+                      Prämie: '365.0'
+                    - Versicherer: '200'
+                      Prämie: '310.0'
+                    - Versicherer: '500'
+                      Prämie: '380.0'
+        '400':
+          description: Invalid input or missing required parameters.
+        '500':
+          description: Internal server error.
